@@ -314,68 +314,6 @@ body{ margin: 0px; font-size:12px; background: #f4f4f4; font-family: '微软雅�
 #main { margin: 20px auto; border: 1px solid #9299b5; padding: 10px; -ms-border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px; -o-border-radius: 10px; border-radius: 10px; }
 .exploreritem{ float:left; width:128px; height:128px; border:2px solid #777; text-aligin:center;  margin:7px; font-size:10px; }
 .exploreritem .submit{ width: 100%; height: 80px; background-repeat: no-repeat; background-position: center center; border: none; cursor:pointer; line-height:11; }
-.archive{background-image:url(../WebFTP/Static/icons/big/archive.png);}
-.asp{background-image:url(../WebFTP/Static/icons/big/asp.png);}
-.audio{background-image:url(../WebFTP/Static/icons/big/audio.png);}
-.authors{background-image:url(../WebFTP/Static/icons/big/authors.png);}
-.bin{background-image:url(../WebFTP/Static/icons/big/bin.png);}
-.bmp{background-image:url(../WebFTP/Static/icons/big/bmp.png);}
-.c{background-image:url(../WebFTP/Static/icons/big/c.png);}
-.calc{background-image:url(../WebFTP/Static/icons/big/calc.png);}
-.cd{background-image:url(../WebFTP/Static/icons/big/cd.png);}
-.copying{background-image:url(../WebFTP/Static/icons/big/copying.png);}
-.cpp{background-image:url(../WebFTP/Static/icons/big/cpp.png);}
-.css{background-image:url(../WebFTP/Static/icons/big/css.png);}
-.deb{background-image:url(../WebFTP/Static/icons/big/deb.png);}
-.default{background-image:url(../WebFTP/Static/icons/big/default.png);}
-.doc{background-image:url(../WebFTP/Static/icons/big/doc.png);}
-.draw{background-image:url(../WebFTP/Static/icons/big/draw.png);}
-.eps{background-image:url(../WebFTP/Static/icons/big/eps.png);}
-.exe{background-image:url(../WebFTP/Static/icons/big/exe.png);}
-.floder-home{background-image:url(../WebFTP/Static/icons/big/floder-home.png);}
-.floder-open{background-image:url(../WebFTP/Static/icons/big/floder-open.png);}
-.floder-page{background-image:url(../WebFTP/Static/icons/big/floder-page.png);}
-.floder-parent{background-image:url(../WebFTP/Static/icons/big/floder-parent.png);}
-.floder{background-image:url(../WebFTP/Static/icons/big/floder.png);}
-.gif{background-image:url(../WebFTP/Static/icons/big/gif.png);}
-.gzip{background-image:url(../WebFTP/Static/icons/big/gzip.png);}
-.h{background-image:url(../WebFTP/Static/icons/big/h.png);}
-.hpp{background-image:url(../WebFTP/Static/icons/big/hpp.png);}
-.html{background-image:url(../WebFTP/Static/icons/big/html.png);}
-.ico{background-image:url(../WebFTP/Static/icons/big/ico.png);}
-.image{background-image:url(../WebFTP/Static/icons/big/image.png);}
-.install{background-image:url(../WebFTP/Static/icons/big/install.png);}
-.java{background-image:url(../WebFTP/Static/icons/big/java.png);}
-.jpg{background-image:url(../WebFTP/Static/icons/big/jpg.png);}
-.js{background-image:url(../WebFTP/Static/icons/big/js.png);}
-.log{background-image:url(../WebFTP/Static/icons/big/log.png);}
-.makefile{background-image:url(../WebFTP/Static/icons/big/makefile.png);}
-.package{background-image:url(../WebFTP/Static/icons/big/package.png);}
-.pdf{background-image:url(../WebFTP/Static/icons/big/pdf.png);}
-.php{background-image:url(../WebFTP/Static/icons/big/php.png);}
-.playlist{background-image:url(../WebFTP/Static/icons/big/playlist.png);}
-.png{background-image:url(../WebFTP/Static/icons/big/png.png);}
-.pres{background-image:url(../WebFTP/Static/icons/big/pres.png);}
-.psd{background-image:url(../WebFTP/Static/icons/big/psd.png);}
-.py{background-image:url(../WebFTP/Static/icons/big/py.png);}
-.rar{background-image:url(../WebFTP/Static/icons/big/rar.png);}
-.rb{background-image:url(../WebFTP/Static/icons/big/rb.png);}
-.readme{background-image:url(../WebFTP/Static/icons/big/readme.png);}
-.rpm{background-image:url(../WebFTP/Static/icons/big/rpm.png);}
-.rss{background-image:url(../WebFTP/Static/icons/big/rss.png);}
-.rtf{background-image:url(../WebFTP/Static/icons/big/rtf.png);}
-.script{background-image:url(../WebFTP/Static/icons/big/script.png);}
-.source{background-image:url(../WebFTP/Static/icons/big/source.png);}
-.sql{background-image:url(../WebFTP/Static/icons/big/sql.png);}
-.tar{background-image:url(../WebFTP/Static/icons/big/tar.png);}
-.tex{background-image:url(../WebFTP/Static/icons/big/tex.png);}
-.text{background-image:url(../WebFTP/Static/icons/big/text.png);}
-.tiff{background-image:url(../WebFTP/Static/icons/big/tiff.png);}
-.unknown{background-image:url(../WebFTP/Static/icons/big/unknown.png);}
-.vcal{background-image:url(../WebFTP/Static/icons/big/vcal.png);}
-.video{background-image:url(../WebFTP/Static/icons/big/video.png);}
-.xml{background-image:url(../WebFTP/Static/icons/big/xml.png);}
-.zip{background-image:url(../WebFTP/Static/icons/big/zip.png);}
 .op{width:100px;}
 .disabled{color:#999;}
 .main { width:90%;margin:10px auto;border:1px solid #999; }
@@ -383,7 +321,20 @@ body{ margin: 0px; font-size:12px; background: #f4f4f4; font-family: '微软雅�
 .splitline { height: 1px; background: #838383; margin: 10px auto; width: 75%; }
 #footer { height: 100px; background: #c6c6c6; }
 </style>
-<script>
+<script type="text/javascript">
+(function(){
+var fileType = ['archive','asp','audio','authors','bin','bmp','c','calc','cd','copying','cpp','css',
+'deb','default','doc','draw','eps','exe','folder_home','folder_open','folder_page','folder_parent','floder',
+'gif','gzip','h','hpp','html','ico','image','install','java','jpg','js','log','makefile','package','pdf',
+'php','playlist','png','pres','psd','py','rar','rb','readme','rpm','rss','rtf','script','source','sql',
+'tar','tex','text','tiff','unknown','vcal','video','xml','zip'];
+var style = document.createElement('STYLE');
+style.type = 'text/css';
+for(var ii in fileType){
+style.innerHTML += '.'+fileType[ii]+'{background:url(../WebFTP/Static/);}';
+}
+document.getElementsByTagName("HEAD")[0].appendChild(style);
+})();
 var fragment = document.createDocumentFragment();
 var HTMLs = '';
 function addUnmatchItem(path, doseNOTexist){
