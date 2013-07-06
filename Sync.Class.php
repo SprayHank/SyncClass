@@ -41,7 +41,7 @@ class SYNC {
 	private static function MD5_Checksum($realdir) {
 		$dir = g2u(str_replace(LOCAL_DIR, '', $realdir));
 
-		return '<input type="hidden" name="file['.$dir.']" value="'.md5_file($realdir).'" />'."\n";
+		return '<input type="hidden" name="file['.$dir.']" value="'.md5_file($realdir).'" />'."\r\n";
 	}
 
 
