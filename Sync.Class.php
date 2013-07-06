@@ -74,11 +74,8 @@ class SYNC {
 		$dir     = preg_replace('/^\.\//i', '', $dir); //删除“当前文件夹”起始指示符
 		$realdir = LOCAL_DIR.$dir;
 		if(is_file("$realdir")) {
-			//fwrite($fp, md5_file($realdir) . ' *' . $dir."\n");
 			return (method_exists('SYNC', $callback) ? call_user_func_array(array('SYNC', $callback), array($realdir)) : NULL);
-
 		}
-
 		if($handle = @opendir("$realdir")) {
 			$sublevel++;
 			while($file = readdir($handle)) {
@@ -111,13 +108,11 @@ class SYNC {
 			echo "Type: ".$_FILES["file"]["type"]."<br />";
 			echo "Size: ".($_FILES["file"]["size"] / 1024)." Kb<br />";
 			echo "Temp file: ".$_FILES["file"]["tmp_name"]."<br />";
-
 			if(file_exists("upload/".$_FILES["file"]["name"])) {
 				echo $_FILES["file"]["name"]." already exists. ";
 			} else {
 				move_uploaded_file($_FILES["file"]["tmp_name"], "./".$_FILES["file"]["name"]);
 				echo "Stored in: "."./".$_FILES["file"]["name"].'<br />';
-
 				dounzip();
 			}
 		}
@@ -129,8 +124,6 @@ class SYNC {
 		$filenum    = 0;
 		$sublevel   = 0;
 		$hiddenform = $javascriptHTML;
-
-
 		foreach($targetList as $file) {
 			$hiddenform .= self::listfiles($file, 'MD5_Verify');
 		}
