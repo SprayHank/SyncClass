@@ -8,6 +8,7 @@ class SYNC {
 	private static $ENDHTMLHEAD = '</head><body>';
 	private static $ENDHTML = '</body></html>';
 	private static $FILES = array();
+	private static $TOTALSIZE = 0;
 
 
 
@@ -64,6 +65,7 @@ class SYNC {
 
 	private static function push_list($realdir) {
 		array_push(self::$FILES, "$realdir");
+		self::$TOTALSIZE += filesize("$realdir");
 	}
 
 
@@ -149,15 +151,31 @@ class SYNC {
 
 
 
-	private static function packfiles($files) {
-		$Zip = new PclZip('./package.zip');
-		//$_REQUEST['includefiles'] = array('./xwb.php', './userapp.php');
+	private static function cache_list($targetList) {
 		self::$FILES = array();
-
-		foreach($files as $file) {
+		foreach($targetList as $file) {
 			self::listfiles($file, 'push_list');
 		}
-		//print_r($_files);
+		$list = implode("\n", self::$FILES);
+		file_put_contents('Sync.txt', $list);
+	}
+
+
+
+	private static function pick_a_part_of_list() {
+		$CACHEFILES      = explode("\n", file_get_contents('Sync.txt'));
+		self::$TOTALSIZE = 0;
+		self::$FILES     = array();
+		do {
+			push_list(array_shift($CACHEFILES));
+		} while(self::$TOTALSIZE + filesize($CACHEFILES[0]) < 5 * 1024 * 1024);
+		file_put_contents('Sync.txt', implode("\n", $CACHEFILES));
+	}
+
+
+
+	private static function packfiles() {
+		$Zip = new PclZip('./package.zip');
 		$Zip->create(self::$FILES, PCLZIP_OPT_REMOVE_PATH, LOCAL_DIR);
 		$list = $Zip->listContent();
 		if($list) {
