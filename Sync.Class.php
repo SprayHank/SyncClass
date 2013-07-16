@@ -294,10 +294,10 @@ class SYNC {
 <div id="displayRect"></div>
 <br/>
 <div id="firstStep" style="clear:both;">
-	<input type='button' value='反选' onclick='selrev();'>
-	<input type='button' value='测试' onclick='ssd()'>
+	<input type='button' value='反选' onclick='selrev();' />
+	<input type='button' value='测试' onclick='ssd()' />
 	<input type='hidden' name='operation' value='' />
-	<input type='text' name='list' style="width:400px;"/>
+	<input type='text' name='list' style="width:400px;" />
 	<input type="submit" name="do" value="upload" />
 	<input type="submit" name="do" value="dnload" />
 	<input type="submit" name="do" value="MD5 Compare" />
