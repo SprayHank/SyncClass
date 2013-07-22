@@ -340,7 +340,7 @@ FOM;
 <div id="main">
 <iframe name="controlFrame" style="display:none;"></iframe>
 <form method="post" enctype="multipart/form-data" action="http://localhost/Sync/" target="controlFrame">
-<input type="submit" name="do" value="显示远程文件" /><input type="submit" name="do" value="显示本地文件" />
+<input type="submit" name="operation" value="显示远程文件" /><input type="submit" name="operation" value="显示本地文件" />
 <br />
 当前忽略文件（正则）：<input type="text" name="ignores" value="$IGNORES" style="width: 600px;" disabled />
 <div id="displayRect"></div>
@@ -348,11 +348,11 @@ FOM;
 <div id="firstStep" style="clear:both;">
 	<input type='button' value='反选' onclick='selrev();' />
 	<input type='button' value='测试' onclick='ssd()' />
-	<input type='hidden' name='operation' value='' />
+	<input type='hidden' name='do' value='' />
 	<input type='text' name='list' style="width:400px;" />
-	<input type="submit" name="do" value="upload" />
-	<input type="submit" name="do" value="dnload" />
-	<input type="submit" name="do" value="MD5 Compare" />
+	<input type="submit" name="operation" value="upload" />
+	<input type="submit" name="operation" value="dnload" />
+	<input type="submit" name="operation" value="MD5 Compare" />
 </div>
 <script language='javascript'>
 	function selrev() {
