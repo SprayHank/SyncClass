@@ -160,6 +160,7 @@ class SYNC {
 
 
 	private static function put() {
+		GLOBAL $SessionSite;
 		$CACHEFILES      = explode("\n", file_get_contents('Sync.txt'));
 		self::$TOTALSIZE = 0;
 		self::$FILES     = array();
