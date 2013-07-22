@@ -190,12 +190,12 @@ class SYNC {
 		$document = curl_exec($ch); //执行预定义的CURL
 		if(!curl_errno($ch)) {
 			$info = curl_getinfo($ch);
-			echo '<div>Took '.$info['total_time'].' seconds to send a request to '.$info['url'].'</div>';
+			$time = '<div>Took '.$info['total_time'].' seconds to send a request to '.$info['url'].'</div>';
 		} else {
 			echo 'Curl error: '.curl_error($ch);
 		}
 		curl_close($ch);
-		return $document;
+		return $time.$document;
 	}
 
 
