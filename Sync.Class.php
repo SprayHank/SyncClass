@@ -140,9 +140,18 @@ class SYNC {
 
 
 
+	public static function after_upload_on_local($targetList) {
+		echo '<script>';
+		plusHTML($_POST['displayInfo']);
+		echo 'parent.document.getElementById("displayRect").innerHTML = html;</script>';
+	}
+
+
+
 	public static function upload($targetList) {
 		GLOBAL $SessionSite;
 		self::cache_list($targetList);
+
 		return self::put();
 	}
 
@@ -172,7 +181,8 @@ class SYNC {
 		$res     = self::packfiles();
 		$package = realpath('package.zip');
 		$data    = array('file' => "@$package");
-		return  $res.self::curlrequest("http://$SessionSite/sync.php?operation=push", $data);
+
+		return $res.self::curlrequest("http://$SessionSite/sync.php?operation=push", $data);
 	}
 
 
@@ -195,6 +205,7 @@ class SYNC {
 			echo 'Curl error: '.curl_error($ch);
 		}
 		curl_close($ch);
+
 		return $time.$document;
 	}
 
@@ -222,6 +233,7 @@ class SYNC {
 			$message .= '<font color="green">压缩文件详情：</font><font color="red">共'.$fold.' 个目录，'.$fil.' 个文件</font><br />';
 			$message .= '<font color="green">压缩文档大小：</font><font color="red">'.dealsize($tot_comp).'</font><br />';
 			$message .= '<font color="green">解压文档大小：</font><font color="red">'.dealsize($tot_uncomp).'</font><br />';
+
 			//$message .= '<font color="green">压缩执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
 			return $message;
 
