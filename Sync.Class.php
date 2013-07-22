@@ -143,7 +143,15 @@ class SYNC {
 	public static function after_upload_on_local($targetList) {
 		echo '<script>var html = "";';
 		plusHTML($_POST['displayInfo']);
+		$operation = strtr($_REQUEST['operation'], array('after'=>'continue'));
 		echo 'parent.document.getElementById("displayRect").innerHTML = html;</script>';
+		if($_POST['continue'] == 'continue')echo <<<FOM
+		\n
+<form action="http://localhost/Sync/index.php" method="post" enctype="multipart/form-data">
+<input type="hidden" name="do" value="$operation" />
+</form>
+<script type="text/javascript">document.getElementsByTagName('FORM')[0].submit();</script>
+FOM;
 	}
 
 
