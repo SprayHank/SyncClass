@@ -141,7 +141,7 @@ class SYNC {
 
 
 	public static function after_upload_on_local($targetList) {
-		echo '<script>';
+		echo '<script>var html = "";';
 		plusHTML($_POST['displayInfo']);
 		echo 'parent.document.getElementById("displayRect").innerHTML = html;</script>';
 	}
