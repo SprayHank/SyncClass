@@ -142,11 +142,8 @@ class SYNC {
 
 	public static function upload($targetList) {
 		GLOBAL $SessionSite;
-		self::packfiles($targetList);
-		$package = realpath('package.zip');
-		$data    = array('file' => "@$package");
-		$res     = curlrequest("http://$SessionSite/sync.php?operation=push", $data);
-		echo($res);
+		self::cache_list($targetList);
+		self::put();
 	}
 
 
@@ -162,7 +159,7 @@ class SYNC {
 
 
 
-	private static function pick_a_part_of_list() {
+	private static function put() {
 		$CACHEFILES      = explode("\n", file_get_contents('Sync.txt'));
 		self::$TOTALSIZE = 0;
 		self::$FILES     = array();
@@ -170,6 +167,11 @@ class SYNC {
 			push_list(array_shift($CACHEFILES));
 		} while(self::$TOTALSIZE + filesize($CACHEFILES[0]) < 5 * 1024 * 1024);
 		file_put_contents('Sync.txt', implode("\n", $CACHEFILES));
+		self::packfiles();
+		$package = realpath('package.zip');
+		$data    = array('file' => "@$package");
+		$res     = curlrequest("http://$SessionSite/sync.php?operation=push", $data);
+		echo($res);
 	}
 
 
