@@ -143,7 +143,7 @@ class SYNC {
 	public static function upload($targetList) {
 		GLOBAL $SessionSite;
 		self::cache_list($targetList);
-		self::put();
+		return self::put();
 	}
 
 
@@ -160,19 +160,19 @@ class SYNC {
 
 
 	private static function put() {
-		GLOBAL $SessionSite;
+		GLOBAL $SessionSite, $continue;
 		$CACHEFILES      = explode("\n", file_get_contents('Sync.txt'));
 		self::$TOTALSIZE = 0;
 		self::$FILES     = array();
 		do {
 			self::push_list(array_shift($CACHEFILES));
-		} while(self::$TOTALSIZE + filesize($CACHEFILES[0]) < 5 * 1024 * 1024);
+		} while(self::$TOTALSIZE + filesize($CACHEFILES[0]) < 2 * 1024 * 1024);
+		$continue = count($CACHEFILES) ? 'continue' : 'end';
 		file_put_contents('Sync.txt', implode("\n", $CACHEFILES));
-		self::packfiles();
+		$res     = self::packfiles();
 		$package = realpath('package.zip');
 		$data    = array('file' => "@$package");
-		$res     = self::curlrequest("http://$SessionSite/sync.php?operation=push", $data);
-		echo($res);
+		return  $res.self::curlrequest("http://$SessionSite/sync.php?operation=push", $data);
 	}
 
 
@@ -184,7 +184,9 @@ class SYNC {
 		//curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method); //设置请求方式
 		//curl_setopt($ch, CURLOPT_HTTPHEADER, array("X-HTTP-Method-Override: $method")); //设置HTTP头信息
 		curl_setopt($ch, CURLOPT_POST, 1); //以post方式提交数据
+		$level = error_reporting(0);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data); //设置提交的字符串
+		error_reporting($level);
 		$document = curl_exec($ch); //执行预定义的CURL
 		if(!curl_errno($ch)) {
 			$info = curl_getinfo($ch);
@@ -221,7 +223,7 @@ class SYNC {
 			$message .= '<font color="green">压缩文档大小：</font><font color="red">'.dealsize($tot_comp).'</font><br />';
 			$message .= '<font color="green">解压文档大小：</font><font color="red">'.dealsize($tot_uncomp).'</font><br />';
 			//$message .= '<font color="green">压缩执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
-			echo $message;
+			return $message;
 
 
 		} else {
