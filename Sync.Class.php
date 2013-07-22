@@ -196,7 +196,7 @@ FOM;
 		$package = realpath('package.zip');
 		$data    = array('file' => "@$package");
 
-		return $res.self::curlrequest("http://$SessionSite/sync.php?operation=push", $data);
+		return $res.self::curlrequest("http://$SessionSite/sync.php?do=push", $data);
 	}
 
 
