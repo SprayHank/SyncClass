@@ -164,7 +164,7 @@ class SYNC {
 		self::$TOTALSIZE = 0;
 		self::$FILES     = array();
 		do {
-			push_list(array_shift($CACHEFILES));
+			self::push_list(array_shift($CACHEFILES));
 		} while(self::$TOTALSIZE + filesize($CACHEFILES[0]) < 5 * 1024 * 1024);
 		file_put_contents('Sync.txt', implode("\n", $CACHEFILES));
 		self::packfiles();
