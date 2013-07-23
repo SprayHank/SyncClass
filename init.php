@@ -17,7 +17,7 @@ if(version_compare(PHP_VERSION, '5.4') < 0 && get_magic_quotes_gpc()) {
 	$_COOKIE  = array_map('stripslashes_deep', $_COOKIE);
 	$_REQUEST = array_map('stripslashes_deep', $_REQUEST);
 }
-require dirname(__FILE__).'/config.php';
+require dirname(dirname(__FILE__)).'/sync/config.php';
 Sync::init_ignores();
 GLOBAL $IGNORES;
 $submit    = isset($_REQUEST['submit']) ? $_REQUEST['submit'] : '';
