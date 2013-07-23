@@ -211,7 +211,10 @@ FOM;
 		$level = error_reporting(0);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data); //设置提交的字符串
 		error_reporting($level);
+		$time = ini_get('max_execution_time');
+		ini_set('max_execution_time', '80');
 		$document = curl_exec($ch); //执行预定义的CURL
+		ini_set('max_execution_time', $time);
 		if(!curl_errno($ch)) {
 			$info = curl_getinfo($ch);
 			$time = '<div>Took '.$info['total_time'].' seconds to send a request to '.$info['url'].'</div>';
