@@ -35,6 +35,48 @@ function plusHTML($HTML) {
 }
 
 
+function sendpost($url, $data) {
+	//先解析url
+	$url      = parse_url($url);
+	$url_port = "80";
+	if(!$url) return "couldn't parse url";
+	//将参数拼成URL key1=value1&key2=value2 的形式
+	$encoded = "";
+	while(list($k, $v) = each($data)) {
+		$encoded .= ($encoded ? '&' : '');
+		$encoded .= rawurlencode($k)."=".rawurlencode($v);
+	}
+	$len = strlen($encoded);
+	//拼上http头
+	$out = "POST ".$url['path']." HTTP/1.1\r\n";
+	$out .= "Host:".$url['host']."\r\n";
+	$out .= "Content-type: application/x-www-form-urlencoded\r\n";
+	$out .= "Connection: Close\r\n";
+	$out .= "Content-Length: $len\r\n";
+	$out .= "\r\n";
+	$out .= $encoded."\r\n";
+	//打开一个sock
+	$fp = @fsockopen($url['host'], $url_port);
+	var_dump($fp);
+	$line = "";
+	if(!$fp) {
+		echo "$errstr($errno)\n";
+	} else {
+		fwrite($fp, $out);
+		while(!feof($fp)) {
+			$line .= fgets($fp, 2048);
+		}
+		//去掉头文件
+		if($line) {
+			$body = stristr($line, "\r\n\r\n");
+			$body = substr($body, 4, strlen($body));
+			$line = $body;
+		}
+		fclose($fp);
+		return $line;
+	}
+}
+
 function dounzip() {
 	$path      = './';
 	$name      = 'package.zip';
