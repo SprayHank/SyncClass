@@ -3107,9 +3107,7 @@ function PclZipUtilOptionText($p_option) {
 	$v_list = get_defined_constants();
 	for(reset($v_list); $v_key = key($v_list); next($v_list)) {
 		$v_prefix = substr($v_key, 0, 10);
-		if((($v_prefix == 'PCLZIP_OPT')
-				|| ($v_prefix == 'PCLZIP_CB_')
-				|| ($v_prefix == 'PCLZIP_ATT'))
+		if(in_array($v_prefix, array('PCLZIP_OPT', 'PCLZIP_CB_', 'PCLZIP_ATT'), TRUE)
 			&& ($v_list[$v_key] == $p_option)
 		) {
 			return $v_key;
