@@ -171,6 +171,11 @@ FOM;
 
 
 
+	public static function dnload($targetList){
+		return null;
+	}
+
+
 	private static function cache_list($targetList) {
 		self::$FILES = array();
 		foreach($targetList as $file) {
