@@ -154,6 +154,18 @@ class SYNC {
 FOM;
 	}
 
+	public static function after_dnload_on_local($targetList){
+		self::cache_list($targetList);
+		self::$FILES = explode("\n", file_get_contents('Sync.txt'));
+		self::packfiles();
+		echo <<<FOM
+		\n
+<form action="http://localhost/Sync/index.php?operation=pulltolocal" method="post" enctype="multipart/form-data">
+</form>
+<script type="text/javascript">document.getElementsByTagName('FORM')[0].submit();</script>
+FOM;
+	}
+
 
 
 	public static function continue_upload_on_local($targetList) {
