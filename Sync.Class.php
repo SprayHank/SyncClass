@@ -70,13 +70,13 @@ class SYNC {
 
 
 
-	private static function listfiles($dir = ".", $callback = NULL) {
+	private static function listfiles($dir = ".", $callback = null) {
 		GLOBAL $sublevel, $fp, $IGNORES;
 		$return  = '';
 		$dir     = preg_replace('/^\.\//i', '', $dir); //删除“当前文件夹”起始指示符
 		$realdir = LOCAL_DIR.$dir;
 		if(is_file("$realdir")) {
-			return (method_exists('SYNC', $callback) ? call_user_func_array(array('SYNC', $callback), array($realdir)) : NULL);
+			return (method_exists('SYNC', $callback) ? call_user_func_array(array('SYNC', $callback), array($realdir)) : null);
 		}
 		if($handle = @opendir("$realdir")) {
 			$sublevel++;
@@ -171,9 +171,10 @@ FOM;
 
 
 
-	public static function dnload($targetList){
+	public static function dnload($targetList) {
 		return null;
 	}
+
 
 
 	private static function cache_list($targetList) {
