@@ -249,7 +249,7 @@ FOM;
 		global $SessionSite;
 		$reuslt = "";
 		$reuslt = file_get_contents("http://$SessionSite/package.zip");
-		$fp     = file_put_conetnts('./package.zip', $reuslt);
+		$fp     = file_put_contents('./package.zip', $reuslt);
 		$path      = './';
 		$name      = 'package.zip';
 		$remove    = 0;
