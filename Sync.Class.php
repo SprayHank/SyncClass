@@ -160,7 +160,7 @@ FOM;
 		self::packfiles();
 		echo <<<FOM
 		\n
-<form action="http://localhost/Sync/index.php?operation=pulltolocal" method="post" enctype="multipart/form-data">
+<form action="http://localhost/Sync/index.php?do=pulltolocal" method="post" enctype="multipart/form-data">
 </form>
 <script type="text/javascript">document.getElementsByTagName('FORM')[0].submit();</script>
 FOM;
@@ -245,6 +245,47 @@ FOM;
 	}
 
 
+	public static function pulltolocal() {
+		global $SessionSite;
+		$reuslt = "";
+		$reuslt = file_get_contents("http://$SessionSite/package.zip");
+		$fp     = file_put_conetnts('./package.zip', $reuslt);
+		$path      = './';
+		$name      = 'package.zip';
+		$remove    = 0;
+		$unzippath = './';
+		if(file_exists('./package.zip') && is_file('./package.zip')) {
+			$Zip    = new PclZip('./package.zip');
+			$result = $Zip->extract(PCLZIP_OPT_PATH, LOCAL_DIR);
+			if($result) {
+				$statusCode = 200;
+				$list       = $Zip->listContent();
+				$fold       = 0;
+				$fil        = 0;
+				$tot_comp   = 0;
+				$tot_uncomp = 0;
+				foreach($list as $key => $val) {
+					if($val['folder'] == '1') {
+						++$fold;
+					} else {
+						++$fil;
+						$tot_comp += $val['compressed_size'];
+						$tot_uncomp += $val['size'];
+					}
+				}
+				$message = '<font color="green">解压目标文件：</font><font color="red"> '.($name).'</font><br />';
+				$message .= '<font color="green">解压文件详情：</font><font color="red">共'.$fold.' 个目录，'.$fil.' 个文件</font><br />';
+				$message .= '<font color="green">压缩文档大小：</font><font color="red">'.($tot_comp).'</font><br />';
+				$message .= '<font color="green">解压文档大小：</font><font color="red">'.($tot_uncomp).'</font><br />';
+				//$message .= '<font color="green">解压总计耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
+			} else {
+				$statusCode = 300;
+				$message .= '<font color="blue">解压失败：</font><font color="red">'.$Zip->errorInfo(TRUE).'</font><br />';
+				//$message .= '<font color="green">执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
+			}
+		}
+		echo($message);
+	}
 
 	private static function packfiles() {
 		$Zip = new PclZip('./package.zip');
