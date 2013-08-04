@@ -1,5 +1,4 @@
 <?php defined('SYNCSYSTEM') || die('No direct script access.');
-
 class SYNC {
 
 	public static $CONFIG = array();
@@ -41,7 +40,6 @@ class SYNC {
 
 	private static function MD5_Checksum($realdir) {
 		$dir = g2u(str_replace(LOCAL_DIR, '', $realdir));
-
 		return '<input type="hidden" name="file['.$dir.']" value="'.md5_file($realdir).'" />'."\r\n";
 	}
 
@@ -52,7 +50,6 @@ class SYNC {
 		if($_POST['file'][$dir] != '') {
 			if(md5_file($realdir) != $_POST['file'][$dir]) {
 				unset($_POST['file'][$dir]);
-
 				return ("parent.addUnmatchItem('$dir', false);");
 			}
 			unset($_POST['file'][$dir]);
@@ -87,7 +84,6 @@ class SYNC {
 			closedir($handle);
 			$sublevel--;
 		}
-
 		return $return;
 	}
 
@@ -154,7 +150,9 @@ class SYNC {
 FOM;
 	}
 
-	public static function after_dnload_on_local($targetList){
+
+
+	public static function after_dnload_on_local($targetList) {
 		self::cache_list($targetList);
 		self::$FILES = explode("\n", file_get_contents('Sync.txt'));
 		self::packfiles();
@@ -177,7 +175,6 @@ FOM;
 	public static function upload($targetList) {
 		GLOBAL $SessionSite;
 		self::cache_list($targetList);
-
 		return self::put();
 	}
 
@@ -213,7 +210,6 @@ FOM;
 		$res     = self::packfiles();
 		$package = realpath('package.zip');
 		$data    = array('file' => "@$package");
-
 		return $res.self::curlrequest("http://$SessionSite/sync.php?do=push", $data);
 	}
 
@@ -240,16 +236,16 @@ FOM;
 			echo 'Curl error: '.curl_error($ch);
 		}
 		curl_close($ch);
-
 		return $time.$document;
 	}
 
 
+
 	public static function pulltolocal() {
 		global $SessionSite;
-		$reuslt = "";
-		$reuslt = file_get_contents("http://$SessionSite/package.zip");
-		$fp     = file_put_contents('./package.zip', $reuslt);
+		$reuslt    = "";
+		$reuslt    = file_get_contents("http://$SessionSite/package.zip");
+		$fp        = file_put_contents('./package.zip', $reuslt);
 		$path      = './';
 		$name      = 'package.zip';
 		$remove    = 0;
@@ -280,12 +276,14 @@ FOM;
 				//$message .= '<font color="green">解压总计耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
 			} else {
 				$statusCode = 300;
-				$message .= '<font color="blue">解压失败：</font><font color="red">'.$Zip->errorInfo(TRUE).'</font><br />';
+				$message .= '<font color="blue">解压失败：</font><font color="red">'.$Zip->errorInfo(true).'</font><br />';
 				//$message .= '<font color="green">执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
 			}
 		}
 		echo($message);
 	}
+
+
 
 	private static function packfiles() {
 		$Zip = new PclZip('package.zip');
@@ -324,8 +322,8 @@ FOM;
 		//fclose($fp);
 		//$fp = fopen('./md5.xml', 'a');
 		$hiddenform = '';
-		$filenum  = 0;
-		$sublevel = 0;
+		$filenum    = 0;
+		$sublevel   = 0;
 		foreach($targetList as $file) {
 			$hiddenform .= self::listfiles($file, 'MD5_Checksum');
 		}
@@ -338,7 +336,6 @@ FOM;
 
 
 	public static function _sync() { //这个居然是构造函数？？？只能在前面加下划线
-
 		$upload = $dnload = $delete = array();
 		foreach($_POST['file'] as $file => $option) {
 			switch($option) {
@@ -386,10 +383,8 @@ FOM;
 
 	public function init_page() {
 		GLOBAL $IGNORES;
-
 		$HTMLTemplate = self::$HTMLHEAD.self::$HTMLTITLE.self::$ENDHTMLHEAD;
 		$HTMLTemplate .= '<div id="head_banner">'.self::wrap_html_element('<a class="home" href="sync.php">自开发（无鉴权）网站文件同步系统</a>').'</div>';
-
 		$HTMLTemplate .= <<<HTML
 <div class="wrapper">
 <div id="main">
@@ -475,25 +470,21 @@ function addUnmatchItem(path, doseNOTexist){
 	htm += '</span></div>'+'</div>';
 	HTMLs += htm;
 }
-
 function output(){
 	HTMLs = HTMLs+'<br />';
 	HTMLs += '<input type="submit" name="do" value="sync" />';
 	document.getElementById("firstStep").style.display="none";
 	document.getElementById("displayRect").innerHTML = HTMLs;
 }
-
 </script>
 HTML;
 		$HTMLTemplate .= self::$ENDHTML;
-
 		return $HTMLTemplate;
 	}
 
 
 
 	public function get_filetype() {
-
 	}
 
 
