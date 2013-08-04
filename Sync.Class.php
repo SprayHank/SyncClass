@@ -288,7 +288,7 @@ FOM;
 	}
 
 	private static function packfiles() {
-		$Zip = new PclZip('./package.zip');
+		$Zip = new PclZip('package.zip');
 		$Zip->create(self::$FILES, PCLZIP_OPT_REMOVE_PATH, LOCAL_DIR);
 		$list = $Zip->listContent();
 		if($list) {
@@ -309,34 +309,27 @@ FOM;
 			$message .= '<font color="green">压缩文件详情：</font><font color="red">共'.$fold.' 个目录，'.$fil.' 个文件</font><br />';
 			$message .= '<font color="green">压缩文档大小：</font><font color="red">'.dealsize($tot_comp).'</font><br />';
 			$message .= '<font color="green">解压文档大小：</font><font color="red">'.dealsize($tot_uncomp).'</font><br />';
-
 			//$message .= '<font color="green">压缩执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
 			return $message;
-
-
 		} else {
-			exit (LOCAL_DIR."package.zip 不能写入,请检查路径或权限是否正确.<br>");
+			exit ($Zip->errorInfo(true).LOCAL_DIR."package.zip 不能写入,请检查路径或权限是否正确.<br>");
 		}
 	}
 
 
 
 	public static function MD5_Compare($targetList) {
-		//		$fp = fopen('./md5.xml', 'w');
-		//		fwrite($fp, '');
-		//		fclose($fp);
-		//		$fp = fopen('./md5.xml', 'a');
+		//$fp = fopen('./md5.xml', 'w');
+		//fwrite($fp, '');
+		//fclose($fp);
+		//$fp = fopen('./md5.xml', 'a');
 		$hiddenform = '';
-
 		$filenum  = 0;
 		$sublevel = 0;
-
 		foreach($targetList as $file) {
 			$hiddenform .= self::listfiles($file, 'MD5_Checksum');
 		}
-
 		//$includefiles = serialize($includefiles);
-
 		//$package->createfile();
 		//fclose($fp);
 		return $hiddenform;
