@@ -158,8 +158,7 @@ FOM;
 		self::packfiles();
 		echo <<<FOM
 		\n
-<form action="http://localhost/Sync/index.php?do=pulltolocal" method="post" enctype="multipart/form-data">
-</form>
+<form action="http://localhost/Sync/index.php?do=pulltolocal" method="post" enctype="multipart/form-data"></form>
 <script type="text/javascript">document.getElementsByTagName('FORM')[0].submit();</script>
 FOM;
 	}
