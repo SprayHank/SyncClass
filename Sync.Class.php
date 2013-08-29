@@ -2,7 +2,7 @@
 class SYNC {
 
 	public static $CONFIG = array();
-	private static $HTMLHEAD = '<!DocType HTML><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+	private static $HTMLHEAD = '<!DocType HTML><html><head><meta http-equiv="Content-Type" content="text/html; Charset=UTF-8" />';
 	private static $HTMLTITLE = '<title>网站文件同步系统</title>';
 	private static $ENDHTMLHEAD = '</head><body>';
 	private static $ENDHTML = '</body></html>';
