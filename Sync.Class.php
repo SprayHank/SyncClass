@@ -428,6 +428,7 @@ FOM;
 <div id="footer"></div>
 <style>
 body{ margin: 0px; font-size:12px; background: #f4f4f4; font-family: '微软雅黑','MicroSoft YaHei'; }
+input[type="submit"], input[type="button"]{height:24px;padding: 0 15px;}
 .wrapper { width: 1040px; margin: auto; }
 #head_banner{ background:#00a3e5; height:100px; border-bottom: 5px solid #e4e4e4; }
 .home { font-size: 30px; margin-top: 20px; font-weight: bold; text-decoration: none; color: #3a3a3a; display: inline-block; }
