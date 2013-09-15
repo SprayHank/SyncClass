@@ -391,14 +391,14 @@ FOM;
 <form method="post" enctype="multipart/form-data" action="http://localhost/Sync/" target="controlFrame">
 <input type="submit" name="operation" value="显示远程文件" /><input type="submit" name="operation" value="显示本地文件" />
 <br />
-当前忽略文件（正则）：<input type="text" name="ignores" value="$IGNORES" style="width: 600px;" disabled />
+当前忽略文件（正则）：<input type="text" name="ignores" value="$IGNORES" style="width: 600px;height:32px;box-sizing: border-box;" disabled />
 <div id="displayRect"></div>
 <br/>
 <div id="firstStep" style="clear:both;">
 	<input type='button' value='反选' onclick='selrev();' />
 	<input type='button' value='测试' onclick='ssd()' />
 	<input type='hidden' name='do' value='' />
-	<input type='text' name='list' style="width:400px;" />
+	<input type='text' name='list' style="width:400px;height:32px;box-sizing: border-box;" />
 	<input type="submit" name="operation" value="upload" />
 	<input type="submit" name="operation" value="dnload" />
 	<input type="submit" name="operation" value="MD5 Compare" />
@@ -427,7 +427,7 @@ FOM;
 <div id="footer"></div>
 <style>
 body{ margin: 0px; font-size:12px; background: #f4f4f4; font-family: '微软雅黑','MicroSoft YaHei'; }
-input[type="submit"], input[type="button"]{padding: 6px 25px;}
+input[type="submit"], input[type="button"]{padding: 6px 25px;height:34px;box-sizing: border-box;}
 .wrapper { width: 1040px; margin: auto; }
 #head_banner{ background:#00a3e5; height:100px; border-bottom: 5px solid #e4e4e4; }
 .home { font-size: 30px; margin-top: 20px; font-weight: bold; text-decoration: none; color: #3a3a3a; display: inline-block; }
