@@ -203,7 +203,7 @@ FOM;
 		self::$FILES     = array();
 		do {
 			self::push_list(array_shift($CACHEFILES));
-		} while(count($CACHEFILES) && self::$TOTALSIZE + filesize($CACHEFILES[0]) < 2 * 1024 * 1024);
+		} while(count($CACHEFILES) && self::$TOTALSIZE + filesize($CACHEFILES[0]) < self::$CONFIG['UPLOAD_LIMIT_SIZE']);
 		$continue = count($CACHEFILES) ? 'continue' : 'end';
 		file_put_contents('Sync.txt', implode("\n", $CACHEFILES));
 		$res     = self::packfiles();
