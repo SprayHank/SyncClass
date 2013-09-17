@@ -79,7 +79,7 @@ class SYNC {
 
 	public static function push() {
 		self::catchthepackage();
-		exit('OK');
+		exit();
 	}
 
 
@@ -89,18 +89,14 @@ class SYNC {
 		if($_FILES["file"]["error"] > 0) {
 			echo "Return Code: ".$_FILES["file"]["error"]."<br />";
 		} else {
-			echo '<br />';
-			echo "Upload: ".$_FILES["file"]["name"]."<br />";
-			echo "Type: ".$_FILES["file"]["type"]."<br />";
-			echo "Size: ".($_FILES["file"]["size"] / 1024)." Kb<br />";
-			echo "Temp file: ".$_FILES["file"]["tmp_name"]."<br />";
-			if(file_exists("upload/".$_FILES["file"]["name"])) {
-				echo $_FILES["file"]["name"]." already exists. ";
-			} else {
-				move_uploaded_file($_FILES["file"]["tmp_name"], "./".$_FILES["file"]["name"]);
-				echo "Stored in: "."./".$_FILES["file"]["name"].'<br />';
-				dounzip();
-			}
+//			echo '<br />';
+//			echo "Upload: ".$_FILES["file"]["name"]."<br />";
+//			echo "Type: ".$_FILES["file"]["type"]."<br />";
+//			echo "Size: ".($_FILES["file"]["size"] / 1024)." Kb<br />";
+//			echo "Temp file: ".$_FILES["file"]["tmp_name"]."<br />";
+			move_uploaded_file($_FILES["file"]["tmp_name"], "./".$_FILES["file"]["name"]);
+			//echo "Stored in: "."./".$_FILES["file"]["name"].'<br />';
+			self::dounzip();
 		}
 	}
 
@@ -159,6 +155,9 @@ FOM;
 
 
 
+	/**
+	 * the flag function make the upload operation
+	 */
 	public static function upload($targetList) {
 		GLOBAL $SessionSite;
 		self::cache_list($targetList);
@@ -173,6 +172,9 @@ FOM;
 
 
 
+	/**
+	 * caching the files which will be operation
+	 */
 	private static function cache_list($targetList) {
 		self::$FILES = array();
 		foreach($targetList as $file) {
@@ -184,6 +186,11 @@ FOM;
 
 
 
+	/**
+	 * pack the files and upload to the site
+	 * it split the big list to mini size to make
+	 * and pass to prevent timeout
+	 */
 	private static function put() {
 		GLOBAL $SessionSite, $continue;
 		$CACHEFILES      = explode("\n", file_get_contents('Sync.txt'));
@@ -292,8 +299,8 @@ FOM;
 			}
 			$message = '<font color="green">压缩目标文件：</font><font color="red"> '.'package.zip'.'</font><br />';
 			$message .= '<font color="green">压缩文件详情：</font><font color="red">共'.$fold.' 个目录，'.$fil.' 个文件</font><br />';
-			$message .= '<font color="green">压缩文档大小：</font><font color="red">'.dealsize($tot_comp).'</font><br />';
-			$message .= '<font color="green">解压文档大小：</font><font color="red">'.dealsize($tot_uncomp).'</font><br />';
+			$message .= '<font color="green">压缩文档大小：</font><font color="red">'.($tot_comp).'</font><br />';
+			$message .= '<font color="green">解压文档大小：</font><font color="red">'.($tot_uncomp).'</font><br />';
 			//$message .= '<font color="green">压缩执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
 			return $message;
 		} else {
@@ -361,9 +368,49 @@ FOM;
 	}
 
 
+	private function dounzip() {
+		$path      = './';
+		$name      = 'package.zip';
+		$remove    = 0;
+		$unzippath = './';
+		if(file_exists($path.$name) && is_file($path.$name)) {
+			$Zip    = new PclZip($path.$name);
+			$result = $Zip->extract($path.(('./' == $unzippath || '。/' == @$_POST['unzippath']) ? '' : $unzippath), $remove);
+			if($result) {
+				$statusCode = 200;
+				self::info($Zip);
+				//$message .= '<font color="green">解压总计耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
+			} else {
+				$statusCode = 300;
+				$message .= '<font color="blue">解压失败：</font><font color="red">'.$Zip->errorInfo(TRUE).'</font><br />';
+				echo $message;
+				//$message .= '<font color="green">执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
+			}
+		}
+	}
 
+	private function info($zip) {
+		$list       = $zip->listContent();
+		$fold       = 0;
+		$fil        = 0;
+		$tot_comp   = 0;
+		$tot_uncomp = 0;
+		foreach($list as $key => $val) {
+			if($val['folder'] == '1') {
+				++$fold;
+			} else {
+				++$fil;
+				$tot_comp += $val['compressed_size'];
+				$tot_uncomp += $val['size'];
+			}
+		}
+		$message = '<font color="green">解压文件详情：</font><font color="red">共'.$fold.' 个目录，'.$fil.' 个文件</font><br />';
+		$message .= '<font color="green">压缩文档大小：</font><font color="red">'.($tot_comp).'</font><br />';
+		$message .= '<font color="green">解压文档大小：</font><font color="red">'.($tot_uncomp).'</font><br />';
+		//$message .= '<font color="green">压缩执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
 
-
+		echo $message;
+	}
 
 	public function get_filetype() {
 	}
@@ -885,6 +932,9 @@ HTML;
 		$HTMLTemplate .= self::$ENDHTML;
 		return $HTMLTemplate;
 	}
+
+
+
 	private function wrap_html_element($element) {
 		return '<div class="wrapper">'.$element.'</div>';
 	}
