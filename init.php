@@ -77,50 +77,6 @@ function sendpost($url, $data) {
 	}
 }
 
-function dounzip() {
-	$path      = './';
-	$name      = 'package.zip';
-	$remove    = 0;
-	$unzippath = './';
-	if(file_exists($path.$name) && is_file($path.$name)) {
-		$Zip    = new PclZip($path.$name);
-		$result = $Zip->extract($path.(('./' == $unzippath || '。/' == @$_POST['unzippath']) ? '' : $unzippath), $remove);
-		if($result) {
-			$statusCode = 200;
-			info($Zip);
-			//$message .= '<font color="green">解压总计耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
-		} else {
-			$statusCode = 300;
-			$message .= '<font color="blue">解压失败：</font><font color="red">'.$Zip->errorInfo(TRUE).'</font><br />';
-			echo $message;
-			//$message .= '<font color="green">执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
-		}
-	}
-}
-
-function info($zip) {
-	$list       = $zip->listContent();
-	$fold       = 0;
-	$fil        = 0;
-	$tot_comp   = 0;
-	$tot_uncomp = 0;
-	foreach($list as $key => $val) {
-		if($val['folder'] == '1') {
-			++$fold;
-		} else {
-			++$fil;
-			$tot_comp += $val['compressed_size'];
-			$tot_uncomp += $val['size'];
-		}
-	}
-	$message = '<font color="green">解压目标文件：</font><font color="red"> '.g2u($name).'</font><br />';
-	$message .= '<font color="green">解压文件详情：</font><font color="red">共'.$fold.' 个目录，'.$fil.' 个文件</font><br />';
-	$message .= '<font color="green">压缩文档大小：</font><font color="red">'.dealsize($tot_comp).'</font><br />';
-	$message .= '<font color="green">解压文档大小：</font><font color="red">'.dealsize($tot_uncomp).'</font><br />';
-	//$message .= '<font color="green">压缩执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
-
-	echo $message;
-}
 
 function redirect($url) {
 	exit("<script type='text/javascript'>document.location.href = '{$url}';</script>");
