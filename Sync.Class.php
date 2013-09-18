@@ -89,14 +89,15 @@ class SYNC {
 		if($_FILES["file"]["error"] > 0) {
 			echo "Return Code: ".$_FILES["file"]["error"]."<br />";
 		} else {
-//			echo '<br />';
-//			echo "Upload: ".$_FILES["file"]["name"]."<br />";
-//			echo "Type: ".$_FILES["file"]["type"]."<br />";
-//			echo "Size: ".($_FILES["file"]["size"] / 1024)." Kb<br />";
-//			echo "Temp file: ".$_FILES["file"]["tmp_name"]."<br />";
+			//			echo '<br />';
+			//			echo "Upload: ".$_FILES["file"]["name"]."<br />";
+			//			echo "Type: ".$_FILES["file"]["type"]."<br />";
+			//			echo "Size: ".($_FILES["file"]["size"] / 1024)." Kb<br />";
+			//			echo "Temp file: ".$_FILES["file"]["tmp_name"]."<br />";
 			move_uploaded_file($_FILES["file"]["tmp_name"], "./".$_FILES["file"]["name"]);
 			//echo "Stored in: "."./".$_FILES["file"]["name"].'<br />';
 			self::dounzip();
+			return $_FILES;
 		}
 	}
 
@@ -368,6 +369,7 @@ FOM;
 	}
 
 
+
 	private function dounzip() {
 		$path      = './';
 		$name      = 'package.zip';
@@ -382,12 +384,14 @@ FOM;
 				//$message .= '<font color="green">解压总计耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
 			} else {
 				$statusCode = 300;
-				$message .= '<font color="blue">解压失败：</font><font color="red">'.$Zip->errorInfo(TRUE).'</font><br />';
+				$message .= '<font color="blue">解压失败：</font><font color="red">'.$Zip->errorInfo(true).'</font><br />';
 				echo $message;
 				//$message .= '<font color="green">执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
 			}
 		}
 	}
+
+
 
 	private function info($zip) {
 		$list       = $zip->listContent();
@@ -411,6 +415,159 @@ FOM;
 
 		echo $message;
 	}
+
+}
+
+class Page_Template {
+
+	private static $HTMLHEAD = '<!DocType HTML><html><head><meta charset="UTF-8" /><meta http-equiv="X-UA-Compatible" content="IE=EDGE,CHROME=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--[if lt IE 7]>
+<div class="error chromeframe">
+    很抱歉的告诉您，您正在使用的浏览器版本过于陈旧，一些有用的，令人振奋的特性并未被支持。
+    <br />
+    我们也曾努力，希望在您的浏览器上，创造一致的优越的用户体验。
+    但这给开发人员带来巨大的，几倍于现有的工作负担，并且始终未能成功。
+    <br />
+    并且，您的浏览器也存在若干已知的，无法修复的安全问题。我们建议您升级您的浏览器。这并不困难。
+<div>您可以通过搜索下列关键字之一，来获取最新版本。</div>
+<ul>
+<li>Internet Explorer 8</li>
+<li>Internet Explorer 9</li>
+<li>Internet Explorer 10</li>
+<li>Mozilla Firefox</li>
+<li>Google Chrome</li>
+<li>Safari</li>
+<li>Opera</li>
+</ul>
+<script>
+window.stop ? window.stop() : document.execCommand("Stop")
+</script>
+<![endif]-->
+';
+	private static $HTMLTITLE = '<title>网站文件同步系统</title>';
+	private static $ENDHTMLHEAD = '</head><body>';
+	private static $ENDHTML = '</body></html>';
+
+
+
+	public function end_print_feedback($elements) {
+		$HTMLTemplate = self::$HTMLHEAD.self::$ENDHTMLHEAD;
+		$HTMLTemplate .= $elements.self::$ENDHTML;
+		exit($HTMLTemplate);
+	}
+
+
+
+	public function init_page() {
+		GLOBAL $IGNORES;
+		$HTMLTemplate = self::$HTMLHEAD.self::$HTMLTITLE.self::$ENDHTMLHEAD;
+		$HTMLTemplate .= '<div id="head_banner">'.self::wrap_html_element('<a class="home" href="sync.php">自开发（无鉴权）网站文件同步系统</a>').'</div>';
+		$HTMLTemplate .= <<<HTML
+<div class="wrapper">
+<div id="main">
+<iframe name="controlFrame" style="display:none;"></iframe>
+<form method="post" enctype="multipart/form-data" action="http://localhost/Sync/" target="controlFrame">
+<input type="submit" name="operation" value="显示远程文件" /><input type="submit" name="operation" value="显示本地文件" />
+<br />
+当前忽略文件（正则）：<input type="text" name="ignores" value="$IGNORES" style="width: 600px;height:32px;box-sizing: border-box;" disabled />
+<div id="displayRect"></div>
+<br/>
+<div id="firstStep" style="clear:both;">
+	<input type='button' value='反选' onclick='selrev();' />
+	<input type='button' value='测试' onclick='ssd()' />
+	<input type='hidden' name='do' value='' />
+	<input type='text' name='list' style="width:400px;height:32px;box-sizing: border-box;" />
+	<input type="submit" name="operation" value="upload" />
+	<input type="submit" name="operation" value="dnload" />
+	<input type="submit" name="operation" value="MD5 Compare" />
+</div>
+<script language='javascript'>
+	function selrev() {
+		with (document.myform) {
+			for (i = 0; i < elements.length; i++) {
+				var thiselm = elements[i];
+				if(thiselm.name.match(/includefiles\[\]/))thiselm.checked = !thiselm.checked;
+			}
+		}
+	}
+	function ssd() {
+		with (document.myform) {
+			for (i = 0; i < elements.length; i++) {
+				var thiselm = elements[i];
+				if(thiselm.name.match(/includefiles\[\]/))thiselm.indeterminate = !thiselm.indeterminate;
+			}
+		}
+	}
+</script>
+</form>
+</div>
+</div>
+<div id="footer"></div>
+<style>
+body{ margin: 0px; font-size:12px; background: #f4f4f4; font-family: '微软雅黑','MicroSoft YaHei'; }
+input[type="submit"], input[type="button"]{padding: 6px 25px;height:34px;box-sizing: border-box;}
+.wrapper { width: 1040px; margin: auto; }
+#head_banner{ background:#00a3e5; height:100px; border-bottom: 5px solid #e4e4e4; }
+.home { font-size: 30px; margin-top: 20px; font-weight: bold; text-decoration: none; color: #3a3a3a; display: inline-block; }
+#main { margin: 20px auto; border: 1px solid #9299b5; padding: 10px; -ms-border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px; -o-border-radius: 10px; border-radius: 10px; }
+.exploreritem{ float:left; width:128px; height:128px; border:2px solid #777; text-aligin:center;  margin:7px; font-size:10px; }
+.exploreritem .submit{ width: 100%; height: 80px; background-repeat: no-repeat; background-position: center center; border: none; cursor:pointer; line-height:11; }
+.op{width:100px;}
+.disabled{color:#999;}
+.main { width:90%;margin:10px auto;border:1px solid #999; }
+.rline { height: 1px; background: #c1c1c1; width: 70%; margin: auto; }
+.splitline { height: 1px; background: #838383; margin: 10px auto; width: 75%; }
+#footer { height: 100px; background: #c6c6c6; }
+</style>
+<script type="text/javascript">
+(function(){
+var fileType = ['archive','asp','audio','authors','bin','bmp','c','calc','cd','copying','cpp','css',
+'deb','default','doc','draw','eps','exe','folder_home','folder_open','folder_page','folder_parent','floder',
+'gif','gzip','h','hpp','html','ico','image','install','java','jpg','js','log','makefile','package','pdf',
+'php','playlist','png','pres','psd','py','rar','rb','readme','rpm','rss','rtf','script','source','sql',
+'tar','tex','text','tiff','unknown','vcal','video','xml','zip'];
+var style = document.createElement('STYLE');
+style.type = 'text/css';
+for(var ii in fileType){
+style.innerHTML += '.'+fileType[ii]+'{background:url(../WebFTP/Static/);}';
+}
+document.getElementsByTagName("HEAD")[0].appendChild(style);
+})();
+var fragment = document.createDocumentFragment();
+var HTMLs = '';
+function addUnmatchItem(path, doseNOTexist){
+	var htm = '';
+	htm += '<div class="main">文件：&nbsp;&nbsp; '+path+' &nbsp;&nbsp; '+(doseNOTexist != 'remote' ? doseNOTexist != 'local' ? '' : '本地不存在' : '远程不存在');
+	htm += '<div class="rline"></div>';
+	htm += '<div style="width:70%; margin:auto;">';
+	htm += '<input type="radio" onclick="window.scrollBy(0,50);" name="file['+path+']" value="dnload" '+(doseNOTexist=='remote' ? 'disabled': '')+' />下载';
+	htm += '<input type="radio" onclick="window.scrollBy(0,50);" name="file['+path+']" value="upload" '+(doseNOTexist=='local' ? 'disabled' : '')+' />上传';
+	htm += '<span style="float:right;">';
+	htm += '<input type="radio" onclick="window.scrollBy(0,50);" name="file['+path+']" value="ignore" />忽略';
+	htm += '<input type="radio" onclick="window.scrollBy(0,50);" name="file['+path+']" value="delete" />删除';
+	htm += '</span></div>'+'</div>';
+	HTMLs += htm;
+}
+function output(){
+	HTMLs = HTMLs+'<br />';
+	HTMLs += '<input type="submit" name="do" value="sync" />';
+	document.getElementById("firstStep").style.display="none";
+	document.getElementById("displayRect").innerHTML = HTMLs;
+}
+</script>
+HTML;
+		$HTMLTemplate .= self::$ENDHTML;
+		return $HTMLTemplate;
+	}
+
+
+
+	private function wrap_html_element($element) {
+		return '<div class="wrapper">'.$element.'</div>';
+	}
+}
+
+class File_type {
 
 	public function get_filetype() {
 	}
@@ -789,153 +946,4 @@ FOM;
 		'xwd'     => 'application/x-xwd',
 		'zip'     => 'application/zip',
 	);
-}
-
-class Page_Template {
-
-	private static $HTMLHEAD = '<!DocType HTML><html><head><meta http-equiv="Content-Type" content="text/html; Charset=UTF-8" /><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7,7,8,9,10,11,12,13" />
-<!--[if lt IE 7]>
-<div class="error chromeframe">
-    很抱歉的告诉您，您正在使用的浏览器版本过于陈旧，一些有用的，令人振奋的特性并未被支持。
-    <br />
-    我们也曾努力，希望在您的浏览器上，创造一致的优越的用户体验。
-    但这给开发人员带来巨大的，几倍于现有的工作负担，并且始终未能成功。
-    <br />
-    并且，您的浏览器也存在若干已知的，无法修复的安全问题。我们建议您升级您的浏览器。这并不困难。
-<div>您可以通过搜索下列关键字之一，来获取最新版本。</div>
-<ul>
-<li>Internet Explorer 8</li>
-<li>Internet Explorer 9</li>
-<li>Internet Explorer 10</li>
-<li>Mozilla Firefox</li>
-<li>Google Chrome</li>
-<li>Safari</li>
-<li>Opera</li>
-</ul>
-<script>
-window.stop ? window.stop() : document.execCommand("Stop")
-</script>
-<![endif]-->
-';
-	private static $HTMLTITLE = '<title>网站文件同步系统</title>';
-	private static $ENDHTMLHEAD = '</head><body>';
-	private static $ENDHTML = '</body></html>';
-
-
-
-	public function end_print_feedback($elements) {
-		$HTMLTemplate = self::$HTMLHEAD.self::$ENDHTMLHEAD;
-		$HTMLTemplate .= $elements.self::$ENDHTML;
-		exit($HTMLTemplate);
-	}
-
-
-
-	public function init_page() {
-		GLOBAL $IGNORES;
-		$HTMLTemplate = self::$HTMLHEAD.self::$HTMLTITLE.self::$ENDHTMLHEAD;
-		$HTMLTemplate .= '<div id="head_banner">'.self::wrap_html_element('<a class="home" href="sync.php">自开发（无鉴权）网站文件同步系统</a>').'</div>';
-		$HTMLTemplate .= <<<HTML
-<div class="wrapper">
-<div id="main">
-<iframe name="controlFrame" style="display:none;"></iframe>
-<form method="post" enctype="multipart/form-data" action="http://localhost/Sync/" target="controlFrame">
-<input type="submit" name="operation" value="显示远程文件" /><input type="submit" name="operation" value="显示本地文件" />
-<br />
-当前忽略文件（正则）：<input type="text" name="ignores" value="$IGNORES" style="width: 600px;height:32px;box-sizing: border-box;" disabled />
-<div id="displayRect"></div>
-<br/>
-<div id="firstStep" style="clear:both;">
-	<input type='button' value='反选' onclick='selrev();' />
-	<input type='button' value='测试' onclick='ssd()' />
-	<input type='hidden' name='do' value='' />
-	<input type='text' name='list' style="width:400px;height:32px;box-sizing: border-box;" />
-	<input type="submit" name="operation" value="upload" />
-	<input type="submit" name="operation" value="dnload" />
-	<input type="submit" name="operation" value="MD5 Compare" />
-</div>
-<script language='javascript'>
-	function selrev() {
-		with (document.myform) {
-			for (i = 0; i < elements.length; i++) {
-				var thiselm = elements[i];
-				if(thiselm.name.match(/includefiles\[\]/))thiselm.checked = !thiselm.checked;
-			}
-		}
-	}
-	function ssd() {
-		with (document.myform) {
-			for (i = 0; i < elements.length; i++) {
-				var thiselm = elements[i];
-				if(thiselm.name.match(/includefiles\[\]/))thiselm.indeterminate = !thiselm.indeterminate;
-			}
-		}
-	}
-</script>
-</form>
-</div>
-</div>
-<div id="footer"></div>
-<style>
-body{ margin: 0px; font-size:12px; background: #f4f4f4; font-family: '微软雅黑','MicroSoft YaHei'; }
-input[type="submit"], input[type="button"]{padding: 6px 25px;height:34px;box-sizing: border-box;}
-.wrapper { width: 1040px; margin: auto; }
-#head_banner{ background:#00a3e5; height:100px; border-bottom: 5px solid #e4e4e4; }
-.home { font-size: 30px; margin-top: 20px; font-weight: bold; text-decoration: none; color: #3a3a3a; display: inline-block; }
-#main { margin: 20px auto; border: 1px solid #9299b5; padding: 10px; -ms-border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px; -o-border-radius: 10px; border-radius: 10px; }
-.exploreritem{ float:left; width:128px; height:128px; border:2px solid #777; text-aligin:center;  margin:7px; font-size:10px; }
-.exploreritem .submit{ width: 100%; height: 80px; background-repeat: no-repeat; background-position: center center; border: none; cursor:pointer; line-height:11; }
-.op{width:100px;}
-.disabled{color:#999;}
-.main { width:90%;margin:10px auto;border:1px solid #999; }
-.rline { height: 1px; background: #c1c1c1; width: 70%; margin: auto; }
-.splitline { height: 1px; background: #838383; margin: 10px auto; width: 75%; }
-#footer { height: 100px; background: #c6c6c6; }
-</style>
-<script type="text/javascript">
-(function(){
-var fileType = ['archive','asp','audio','authors','bin','bmp','c','calc','cd','copying','cpp','css',
-'deb','default','doc','draw','eps','exe','folder_home','folder_open','folder_page','folder_parent','floder',
-'gif','gzip','h','hpp','html','ico','image','install','java','jpg','js','log','makefile','package','pdf',
-'php','playlist','png','pres','psd','py','rar','rb','readme','rpm','rss','rtf','script','source','sql',
-'tar','tex','text','tiff','unknown','vcal','video','xml','zip'];
-var style = document.createElement('STYLE');
-style.type = 'text/css';
-for(var ii in fileType){
-style.innerHTML += '.'+fileType[ii]+'{background:url(../WebFTP/Static/);}';
-}
-document.getElementsByTagName("HEAD")[0].appendChild(style);
-})();
-var fragment = document.createDocumentFragment();
-var HTMLs = '';
-function addUnmatchItem(path, doseNOTexist){
-	var htm = '';
-	htm += '<div class="main">文件：&nbsp;&nbsp; '+path+' &nbsp;&nbsp; '+(doseNOTexist != 'remote' ? doseNOTexist != 'local' ? '' : '本地不存在' : '远程不存在');
-	htm += '<div class="rline"></div>';
-	htm += '<div style="width:70%; margin:auto;">';
-	htm += '<input type="radio" onclick="window.scrollBy(0,50);" name="file['+path+']" value="dnload" '+(doseNOTexist=='remote' ? 'disabled': '')+' />下载';
-	htm += '<input type="radio" onclick="window.scrollBy(0,50);" name="file['+path+']" value="upload" '+(doseNOTexist=='local' ? 'disabled' : '')+' />上传';
-	htm += '<span style="float:right;">';
-	htm += '<input type="radio" onclick="window.scrollBy(0,50);" name="file['+path+']" value="ignore" />忽略';
-	htm += '<input type="radio" onclick="window.scrollBy(0,50);" name="file['+path+']" value="delete" />删除';
-	htm += '</span></div>'+'</div>';
-	HTMLs += htm;
-}
-function output(){
-	HTMLs = HTMLs+'<br />';
-	HTMLs += '<input type="submit" name="do" value="sync" />';
-	document.getElementById("firstStep").style.display="none";
-	document.getElementById("displayRect").innerHTML = HTMLs;
-}
-</script>
-HTML;
-		$HTMLTemplate .= self::$ENDHTML;
-		return $HTMLTemplate;
-	}
-
-
-
-	private function wrap_html_element($element) {
-		return '<div class="wrapper">'.$element.'</div>';
-	}
 }
