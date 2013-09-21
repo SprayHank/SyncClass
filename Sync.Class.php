@@ -89,12 +89,12 @@ class SYNC {
 		if($_FILES["file"]["error"] > 0) {
 			echo "Return Code: ".$_FILES["file"]["error"]."<br />";
 		} else {
-			//			echo '<br />';
-			//			echo "Upload: ".$_FILES["file"]["name"]."<br />";
-			//			echo "Type: ".$_FILES["file"]["type"]."<br />";
-			//			echo "Size: ".($_FILES["file"]["size"] / 1024)." Kb<br />";
-			//			echo "Temp file: ".$_FILES["file"]["tmp_name"]."<br />";
 			move_uploaded_file($_FILES["file"]["tmp_name"], "./".$_FILES["file"]["name"]);
+			//echo '<br />';
+			//echo "Upload: ".$_FILES["file"]["name"]."<br />";
+			//echo "Type: ".$_FILES["file"]["type"]."<br />";
+			//echo "Size: ".($_FILES["file"]["size"] / 1024)." Kb<br />";
+			//echo "Temp file: ".$_FILES["file"]["tmp_name"]."<br />";
 			//echo "Stored in: "."./".$_FILES["file"]["name"].'<br />';
 			self::dounzip();
 			return $_FILES;
@@ -194,12 +194,15 @@ FOM;
 	 */
 	private static function put() {
 		GLOBAL $SessionSite, $continue;
-		$CACHEFILES      = explode("\n", file_get_contents('Sync.txt'));
-		self::$TOTALSIZE = 0;
-		self::$FILES     = array();
+		$CACHEFILES        = explode("\n", file_get_contents('Sync.txt'));
+		self::$TOTALSIZE   = 0;
+		self::$FILES       = array();
+		$UPLOAD_LIMIT_SIZE = $_COOKIE['UPLOAD_LIMIT_SIZE'];
+		$UPLOAD_LIMIT_SIZE = min($UPLOAD_LIMIT_SIZE, 20 * 1024 * 1024);
+		$UPLOAD_LIMIT_SIZE = max(UPLOAD_LIMIT_SIZE, 0);
 		do {
 			self::push_list(array_shift($CACHEFILES));
-		} while(count($CACHEFILES) && self::$TOTALSIZE + filesize($CACHEFILES[0]) < self::$CONFIG['UPLOAD_LIMIT_SIZE']);
+		} while(count($CACHEFILES) && self::$TOTALSIZE + filesize($CACHEFILES[0]) < $UPLOAD_LIMIT_SIZE);
 		$continue = count($CACHEFILES) ? 'continue' : 'end';
 		file_put_contents('Sync.txt', implode("\n", $CACHEFILES));
 		$res     = self::packfiles();
@@ -264,8 +267,7 @@ FOM;
 						$tot_uncomp += $val['size'];
 					}
 				}
-				$message = '<font color="green">解压目标文件：</font><font color="red"> '.($name).'</font><br />';
-				$message .= '<font color="green">解压文件详情：</font><font color="red">共'.$fold.' 个目录，'.$fil.' 个文件</font><br />';
+				$message = '<font color="green">解压文件详情：</font><font color="red">共'.$fold.' 个目录，'.$fil.' 个文件</font><br />';
 				$message .= '<font color="green">压缩文档大小：</font><font color="red">'.($tot_comp).'</font><br />';
 				$message .= '<font color="green">解压文档大小：</font><font color="red">'.($tot_uncomp).'</font><br />';
 				//$message .= '<font color="green">解压总计耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
@@ -283,30 +285,7 @@ FOM;
 	private static function packfiles() {
 		$Zip = new PclZip('package.zip');
 		$Zip->create(self::$FILES, PCLZIP_OPT_REMOVE_PATH, LOCAL_DIR);
-		$list = $Zip->listContent();
-		if($list) {
-			$fold       = 0;
-			$fil        = 0;
-			$tot_comp   = 0;
-			$tot_uncomp = 0;
-			foreach($list as $key => $val) {
-				if($val['folder'] == '1') {
-					++$fold;
-				} else {
-					++$fil;
-					$tot_comp += $val['compressed_size'];
-					$tot_uncomp += $val['size'];
-				}
-			}
-			$message = '<font color="green">压缩目标文件：</font><font color="red"> '.'package.zip'.'</font><br />';
-			$message .= '<font color="green">压缩文件详情：</font><font color="red">共'.$fold.' 个目录，'.$fil.' 个文件</font><br />';
-			$message .= '<font color="green">压缩文档大小：</font><font color="red">'.($tot_comp).'</font><br />';
-			$message .= '<font color="green">解压文档大小：</font><font color="red">'.($tot_uncomp).'</font><br />';
-			//$message .= '<font color="green">压缩执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
-			return $message;
-		} else {
-			exit ($Zip->errorInfo(true).LOCAL_DIR."package.zip 不能写入,请检查路径或权限是否正确.<br>");
-		}
+		self::info($Zip);
 	}
 
 
@@ -393,34 +372,38 @@ FOM;
 
 
 
-	private function info($zip) {
-		$list       = $zip->listContent();
-		$fold       = 0;
-		$fil        = 0;
-		$tot_comp   = 0;
-		$tot_uncomp = 0;
-		foreach($list as $key => $val) {
-			if($val['folder'] == '1') {
-				++$fold;
-			} else {
-				++$fil;
-				$tot_comp += $val['compressed_size'];
-				$tot_uncomp += $val['size'];
+	private function info($Zip) {
+		$list = $Zip->listContent();
+		if($list) {
+			$fold       = 0;
+			$fil        = 0;
+			$tot_comp   = 0;
+			$tot_uncomp = 0;
+			foreach($list as $key => $val) {
+				if($val['folder'] == '1') {
+					++$fold;
+				} else {
+					++$fil;
+					$tot_comp += $val['compressed_size'];
+					$tot_uncomp += $val['size'];
+				}
 			}
+			$message = '<font color="green">压缩文件详情：</font><font color="red">共'.$fold.' 个目录，'.$fil.' 个文件</font><br />';
+			$message .= '<font color="green">压缩文档大小：</font><font color="red">'.($tot_comp).'</font><br />';
+			$message .= '<font color="green">解压文档大小：</font><font color="red">'.($tot_uncomp).'</font><br />';
+			//$message .= '<font color="green">压缩执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
+			return $message;
+		} else {
+			exit ($Zip->errorInfo(true).LOCAL_DIR."package.zip 不能写入,请检查路径或权限是否正确.<br>");
 		}
-		$message = '<font color="green">解压文件详情：</font><font color="red">共'.$fold.' 个目录，'.$fil.' 个文件</font><br />';
-		$message .= '<font color="green">压缩文档大小：</font><font color="red">'.($tot_comp).'</font><br />';
-		$message .= '<font color="green">解压文档大小：</font><font color="red">'.($tot_uncomp).'</font><br />';
-		//$message .= '<font color="green">压缩执行耗时：</font><font color="red">' . G('_run_start', '_run_end', 6) . ' 秒</font><br />';
-
-		echo $message;
 	}
 
 }
 
 class Page_Template {
 
-	private static $HTMLHEAD = '<!DocType HTML><html><head><meta charset="UTF-8" /><meta http-equiv="X-UA-Compatible" content="IE=EDGE,CHROME=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0">
+	private static $HTMLHEAD
+		= '<!DocType HTML><html><head><meta charset="UTF-8" /><meta http-equiv="X-UA-Compatible" content="IE=EDGE,CHROME=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!--[if lt IE 7]>
 <div class="error chromeframe">
     很抱歉的告诉您，您正在使用的浏览器版本过于陈旧，一些有用的，令人振奋的特性并未被支持。
@@ -443,6 +426,15 @@ class Page_Template {
 window.stop ? window.stop() : document.execCommand("Stop")
 </script>
 <![endif]-->
+<script type="text/javascript">
+/*@cc_on
+ @if ( @_jscript )
+ //alert("IE中可见");
+ document.documentElement.className += " IE_ALL";
+ @else @*/
+//alert("其他浏览器中可见");
+/*@end @*/
+</script>
 ';
 	private static $HTMLTITLE = '<title>网站文件同步系统</title>';
 	private static $ENDHTMLHEAD = '</head><body>';
@@ -461,51 +453,84 @@ window.stop ? window.stop() : document.execCommand("Stop")
 	public function init_page() {
 		GLOBAL $IGNORES;
 		$HTMLTemplate = self::$HTMLHEAD.self::$HTMLTITLE.self::$ENDHTMLHEAD;
-		$HTMLTemplate .= '<div id="head_banner">'.self::wrap_html_element('<a class="home" href="sync.php">自开发（无鉴权）网站文件同步系统</a>').'</div>';
+		$HTMLTemplate .= '<div id="head_banner">'.self::wrap_html_element('<a class="home" href="./">自开发（无鉴权）网站文件同步系统</a>').'</div>';
 		$HTMLTemplate .= <<<HTML
 <div class="wrapper">
-<div id="main">
+<div id="main" class="clearfix">
 <iframe name="controlFrame" style="display:none;"></iframe>
 <form method="post" enctype="multipart/form-data" action="http://localhost/Sync/" target="controlFrame">
 <input type="submit" name="operation" value="显示远程文件" /><input type="submit" name="operation" value="显示本地文件" />
-<br />
-当前忽略文件（正则）：<input type="text" name="ignores" value="$IGNORES" style="width: 600px;height:32px;box-sizing: border-box;" disabled />
-<div id="displayRect"></div>
+<br /><br /><br />
+当前忽略文件（正则）：<input type="text" name="ignores" value="$IGNORES" style="width: 600px;float:none;" disabled />
+<div id="displayRect">
+
+<div id="transferinfo">
+<font color="green">解压文件详情：</font><font color="red">共<span id="folderCount"></span> 个目录，<span id="fileCount"></span> 个文件</font><br />
+<font color="green">压缩文档大小：</font><font id="packageSize" color="red"></font><br />
+<font color="green">解压文档大小：</font><font id="filesSize" color="red"></font><br />
+</div>
+</div>
 <br/>
-<div id="firstStep" style="clear:both;">
+
+<div class="clearfix">
 	<input type='button' value='反选' onclick='selrev();' />
 	<input type='button' value='测试' onclick='ssd()' />
+</div>
+	<div style="
+    border: 1px solid #999;
+    padding: 10px;
+    margin: 10px;
+    position: relative;
+    width: 279px;
+    border-radius: 6px;
+    line-height: 40px;
+" class="clearfix">
+  <span style="position: absolute;top: -0.8em;background: #f4f4f4;padding: 0 3px;line-height: normal;">上传限制（分包阈值）</span>当前值:
+  <input type="text" name="limit_show" value="20KB" style="width: 60px;text-align: right;padding-right: 8px;float:none;" disabled="disabled">
+  <br>
+
+  <input type="text" name="limit_input" value="" style="width: 133px;">
+  <input type="button" value="修改" style="">
+	</div>
+<div id="firstStep" style="clear:both;">
 	<input type='hidden' name='do' value='' />
-	<input type='text' name='list' style="width:400px;height:32px;box-sizing: border-box;" />
+	<input type="hidden" name="UPLOAD_LIMIT_SIZE" value="" />
+	<input type='text' name='list' style="width:400px;" />
 	<input type="submit" name="operation" value="upload" />
 	<input type="submit" name="operation" value="dnload" />
 	<input type="submit" name="operation" value="MD5 Compare" />
 </div>
 <script language='javascript'>
-	function selrev() {
-		with (document.myform) {
-			for (i = 0; i < elements.length; i++) {
-				var thiselm = elements[i];
-				if(thiselm.name.match(/includefiles\[\]/))thiselm.checked = !thiselm.checked;
-			}
+function selrev() {
+	with (document.myform) {
+		for (i = 0; i < elements.length; i++) {
+			var thiselm = elements[i];
+			if(thiselm.name.match(/includefiles\[\]/))thiselm.checked = !thiselm.checked;
 		}
 	}
-	function ssd() {
-		with (document.myform) {
-			for (i = 0; i < elements.length; i++) {
-				var thiselm = elements[i];
-				if(thiselm.name.match(/includefiles\[\]/))thiselm.indeterminate = !thiselm.indeterminate;
-			}
+}
+function ssd() {
+	with (document.myform) {
+		for (i = 0; i < elements.length; i++) {
+			var thiselm = elements[i];
+			if(thiselm.name.match(/includefiles\[\]/))thiselm.indeterminate = !thiselm.indeterminate;
 		}
 	}
+}
 </script>
 </form>
 </div>
 </div>
 <div id="footer"></div>
 <style>
+.clearfix:before, .clearfix:after { content: " "; /* 1 */ display: table; /* 2 */ }
+.clearfix:after { clear: both }
+.clearfix { zoom: 1; }
+*, *:after, *::before { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
 body{ margin: 0px; font-size:12px; background: #f4f4f4; font-family: '微软雅黑','MicroSoft YaHei'; }
-input[type="submit"], input[type="button"]{padding: 6px 25px;height:34px;box-sizing: border-box;}
+input[type="submit"], input[type="button"]{padding: 6px 25px;height:34px;float:left;margin-top: -1px;margin-left: 5px;}
+.IE_ALL input[type="submit"], input[type="button"]{height:32px;margin-top: 0;}
+input[type="text"]{height:32px;box-sizing: border-box;float:left;}
 .wrapper { width: 1040px; margin: auto; }
 #head_banner{ background:#00a3e5; height:100px; border-bottom: 5px solid #e4e4e4; }
 .home { font-size: 30px; margin-top: 20px; font-weight: bold; text-decoration: none; color: #3a3a3a; display: inline-block; }
@@ -519,6 +544,7 @@ input[type="submit"], input[type="button"]{padding: 6px 25px;height:34px;box-siz
 .splitline { height: 1px; background: #838383; margin: 10px auto; width: 75%; }
 #footer { height: 100px; background: #c6c6c6; }
 </style>
+<script type="text/javascript" src="/lib/Lamos.js"></script>
 <script type="text/javascript">
 (function(){
 var fileType = ['archive','asp','audio','authors','bin','bmp','c','calc','cd','copying','cpp','css',
