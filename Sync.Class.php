@@ -544,7 +544,7 @@ input[type="text"]{height:32px;box-sizing: border-box;float:left;}
 .splitline { height: 1px; background: #838383; margin: 10px auto; width: 75%; }
 #footer { height: 100px; background: #c6c6c6; }
 </style>
-<script type="text/javascript" src="/lib/Lamos.js"></script>
+<script type="text/javascript" src="/lib/js/Lamos.js"></script>
 <script type="text/javascript">
 (function(){
 var fileType = ['archive','asp','audio','authors','bin','bmp','c','calc','cd','copying','cpp','css',
