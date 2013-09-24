@@ -208,7 +208,7 @@ FOM;
 		$res     = self::packfiles();
 		$package = realpath('package.zip');
 		$data    = array('file' => "@$package");
-		return $res.self::curlrequest("http://$SessionSite/sync.php?do=push", $data);
+		return $res.self::curlrequest("http://$SessionSite/sync/?do=push", $data);
 	}
 
 
@@ -342,7 +342,7 @@ FOM;
 			packfiles($upload);
 			$package = realpath('package.zip');
 			$data    = array('file' => "@$package");
-			$res     = curlrequest("http://$SessionSite/sync.php?operation=push", $data);
+			$res     = curlrequest("http://$SessionSite/sync/?operation=push", $data);
 			echo($res);
 		}
 	}
