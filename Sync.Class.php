@@ -123,7 +123,7 @@ class SYNC {
 		$operation = strtr($_REQUEST['do'], array('after' => 'continue'));
 		echo 'parent.document.getElementById("displayRect").innerHTML += html;</script>';
 		if($_POST['continue'] == 'continue')
-			echo Page_Template::form('http://localhost/Sync/index.php', '<input type="hidden" name="do" value="$operation" />')
+			echo Page_Template::form('http://localhost/Sync/index.php', "<input type=\"hidden\" name=\"do\" value=\"$operation\" />")
 				.Page_Template::autoSubmit();
 	}
 
