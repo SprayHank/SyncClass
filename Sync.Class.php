@@ -372,7 +372,7 @@ FOM;
 
 
 
-	private function info($Zip) {
+	private static function info($Zip) {
 		$list = $Zip->listContent();
 		if($list) {
 			$fold       = 0;
