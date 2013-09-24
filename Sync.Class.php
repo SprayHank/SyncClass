@@ -197,7 +197,7 @@ FOM;
 		$CACHEFILES        = explode("\n", file_get_contents('Sync.txt'));
 		self::$TOTALSIZE   = 0;
 		self::$FILES       = array();
-		$UPLOAD_LIMIT_SIZE = $_COOKIE['UPLOAD_LIMIT_SIZE'];
+		$UPLOAD_LIMIT_SIZE = $_REQUEST['UPLOAD_LIMIT_SIZE'];
 		$UPLOAD_LIMIT_SIZE = min($UPLOAD_LIMIT_SIZE, 20 * 1024 * 1024);
 		$UPLOAD_LIMIT_SIZE = max(UPLOAD_LIMIT_SIZE, 0);
 		do {
@@ -494,7 +494,7 @@ window.stop ? window.stop() : document.execCommand("Stop")
 	</div>
 <div id="firstStep" style="clear:both;">
 	<input type='hidden' name='do' value='' />
-	<input type="hidden" name="UPLOAD_LIMIT_SIZE" value="" />
+	<input type="hidden" name="UPLOAD_LIMIT_SIZE" value="10240" />
 	<input type='text' name='list' style="width:400px;" />
 	<input type="submit" name="operation" value="upload" />
 	<input type="submit" name="operation" value="dnload" />
