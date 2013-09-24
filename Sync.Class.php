@@ -165,7 +165,7 @@ class SYNC {
 	private static function cache_list($targetList) {
 		self::$FILES = array();
 		foreach($targetList as $file) {
-			self::listfiles($file, 'push_list');
+			$file != '' && self::listfiles($file, 'push_list');
 		}
 		$list = implode("\n", self::$FILES);
 		file_put_contents('Sync.txt', $list);
