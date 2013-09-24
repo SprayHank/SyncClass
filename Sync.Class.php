@@ -126,13 +126,9 @@ class SYNC {
 		plusHTML($_POST['displayInfo']);
 		$operation = strtr($_REQUEST['do'], array('after' => 'continue'));
 		echo 'parent.document.getElementById("displayRect").innerHTML += html;</script>';
-		if($_POST['continue'] == 'continue') echo <<<FOM
-		\n
-<form action="http://localhost/Sync/index.php" method="post" enctype="multipart/form-data">
-<input type="hidden" name="do" value="$operation" />
-</form>
-<script type="text/javascript">document.getElementsByTagName('FORM')[0].submit();</script>
-FOM;
+		if($_POST['continue'] == 'continue')
+			echo Page_Template::form('http://localhost/Sync/index.php?do=pulltolocal', '<input type="hidden" name="do" value="$operation" />')
+				.Page_Template::autoSubmit();
 	}
 
 
@@ -141,11 +137,7 @@ FOM;
 		self::cache_list($targetList);
 		self::$FILES = explode("\n", file_get_contents('Sync.txt'));
 		self::packfiles();
-		echo <<<FOM
-		\n
-<form action="http://localhost/Sync/index.php?do=pulltolocal" method="post" enctype="multipart/form-data"></form>
-<script type="text/javascript">document.getElementsByTagName('FORM')[0].submit();</script>
-FOM;
+		echo Page_Template::form('http://localhost/Sync/index.php?do=pulltolocal').Page_Template::autoSubmit();
 	}
 
 
@@ -446,6 +438,20 @@ window.stop ? window.stop() : document.execCommand("Stop")
 		$HTMLTemplate = self::$HTMLHEAD.self::$ENDHTMLHEAD;
 		$HTMLTemplate .= $elements.self::$ENDHTML;
 		exit($HTMLTemplate);
+	}
+
+
+
+	public function form($action, $innerHTML = '', $target = '') {
+		$form = '';
+		$form .= '<form method="post" enctype="multipart/form-data" action="'.$action.'"'.($target != '' ? ' target="'.$target.'"' : '').'>';
+		return $form.$innerHTML.'</form>';
+	}
+
+
+
+	public function autoSubmit() {
+		return '<script type="text/javascript">document.getElementsByTagName("FORM")[0].submit();</script>';
 	}
 
 
