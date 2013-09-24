@@ -20,10 +20,6 @@ class SYNC {
 
 
 
-	public static function print_script($script) {
-		return '<script type="text/javascript">'.$script.'</script>';
-	}
-
 
 
 	private static function MD5_Checksum($realdir) {
@@ -116,7 +112,7 @@ class SYNC {
 			}
 		}
 		$hiddenform .= 'parent.output();';
-		exit(self::print_script($hiddenform));
+		exit(Page_Template::print_script($hiddenform));
 	}
 
 
@@ -345,7 +341,7 @@ class SYNC {
 		$path      = './';
 		$name      = 'package.zip';
 		$remove    = 0;
-		$unzippath = './';
+		$unzippath = '../';
 		if(file_exists($path.$name) && is_file($path.$name)) {
 			$Zip    = new PclZip($path.$name);
 			$result = $Zip->extract($path.(('./' == $unzippath || '。/' == @$_POST['unzippath']) ? '' : $unzippath), $remove);
@@ -442,7 +438,7 @@ window.stop ? window.stop() : document.execCommand("Stop")
 
 
 
-	public function form($action, $innerHTML = '', $target = '') {
+	public static function form($action, $innerHTML = '', $target = '') {
 		$form = '';
 		$form .= '<form method="post" enctype="multipart/form-data" action="'.$action.'"'.($target != '' ? ' target="'.$target.'"' : '').'>';
 		return $form.$innerHTML.'</form>';
@@ -450,11 +446,15 @@ window.stop ? window.stop() : document.execCommand("Stop")
 
 
 
-	public function autoSubmit() {
-		return '<script type="text/javascript">document.getElementsByTagName("FORM")[0].submit();</script>';
+	public static function autoSubmit() {
+		return self::print_script('document.getElementsByTagName("FORM")[0].submit();');
 	}
 
 
+
+	public static function print_script($script) {
+		return '<script type="text/javascript">'.$script.'</script>';
+	}
 
 	public function init_page() {
 		GLOBAL $IGNORES;
