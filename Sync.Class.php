@@ -199,7 +199,7 @@ FOM;
 		self::$FILES       = array();
 		$UPLOAD_LIMIT_SIZE = $_REQUEST['UPLOAD_LIMIT_SIZE'];
 		$UPLOAD_LIMIT_SIZE = min($UPLOAD_LIMIT_SIZE, 20 * 1024 * 1024);
-		$UPLOAD_LIMIT_SIZE = max(UPLOAD_LIMIT_SIZE, 0);
+		$UPLOAD_LIMIT_SIZE = max($UPLOAD_LIMIT_SIZE, 0);
 		do {
 			self::push_list(array_shift($CACHEFILES));
 		} while(count($CACHEFILES) && self::$TOTALSIZE + filesize($CACHEFILES[0]) < $UPLOAD_LIMIT_SIZE);
