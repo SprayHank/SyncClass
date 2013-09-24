@@ -20,8 +20,6 @@ class SYNC {
 
 
 
-
-
 	private static function MD5_Checksum($realdir) {
 		$dir = g2u(str_replace(LOCAL_DIR, '', $realdir));
 		return '<input type="hidden" name="file['.$dir.']" value="'.md5_file($realdir).'" />'."\r\n";
@@ -441,6 +439,8 @@ window.stop ? window.stop() : document.execCommand("Stop")
 	public static function form($action, $innerHTML = '', $target = '') {
 		$form = '';
 		$form .= '<form method="post" enctype="multipart/form-data" action="'.$action.'"'.($target != '' ? ' target="'.$target.'"' : '').'>';
+		$SIZE = isset($_REQUEST['UPLOAD_LIMIT_SIZE']) ? $_REQUEST['UPLOAD_LIMIT_SIZE'] : 0;
+		$form .= "<input type=\"hidden\" name=\"UPLOAD_LIMIT_SIZE\" value=\"$SIZE\" />";
 		return $form.$innerHTML.'</form>';
 	}
 
@@ -455,6 +455,8 @@ window.stop ? window.stop() : document.execCommand("Stop")
 	public static function print_script($script) {
 		return '<script type="text/javascript">'.$script.'</script>';
 	}
+
+
 
 	public function init_page() {
 		GLOBAL $IGNORES;
